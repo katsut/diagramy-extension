@@ -1,4 +1,4 @@
-const API = 'http://localhost:3000';
+const API = 'http://localhost:8147';
 
 // Create context menu on install
 chrome.runtime.onInstalled.addListener(() => {
