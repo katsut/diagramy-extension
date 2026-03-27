@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Diagramy",
+  "name": "Figney",
   "version": "0.2.0",
   "description": "テキストを選択して図式化。右クリックで即座にダイアグラムを生成。",
   "permissions": ["contextMenus", "activeTab", "storage", "identity"],

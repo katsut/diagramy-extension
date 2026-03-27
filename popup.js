@@ -61,7 +61,7 @@ function showLoginPrompt() {
   const content = document.getElementById('content');
   content.innerHTML = `
     <div class="login-prompt">
-      <p>ログインしてDiagramyを利用</p>
+      <p>ログインしてFigneyを利用</p>
       <button class="btn-login" onclick="login()">ログイン</button>
     </div>
   `;
@@ -287,7 +287,7 @@ function downloadSvg() {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = 'diagramy.svg';
+  a.download = 'figney.svg';
   a.click();
   URL.revokeObjectURL(url);
 }
