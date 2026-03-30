@@ -110,6 +110,7 @@ function createIframe(initMsg) {
   const iframe = document.createElement('iframe');
   iframe.id = 'app-frame';
   iframe.src = `${API}/app/extension.html`;
+  iframe.allow = 'clipboard-write';
   content.appendChild(iframe);
 
   window.addEventListener('message', (event) => {
