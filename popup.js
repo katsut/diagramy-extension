@@ -157,14 +157,13 @@ function createIframe(initMsg) {
 function handleCopy(format, data) {
   if (!data) return;
   if (format === 'png') {
-    // PNG clipboard requires user gesture — copy as data URL text instead
-    copyToClipboard(data);
+    copyPngFromDataUrl(data);
     return;
   }
-  copyToClipboard(data);
+  copyText(data);
 }
 
-function copyToClipboard(text) {
+function copyText(text) {
   const ta = document.createElement('textarea');
   ta.value = text;
   ta.style.cssText = 'position:fixed;left:-9999px;';
@@ -172,6 +171,26 @@ function copyToClipboard(text) {
   ta.select();
   document.execCommand('copy');
   document.body.removeChild(ta);
+}
+
+function copyPngFromDataUrl(dataUrl) {
+  const img = new Image();
+  img.onload = () => {
+    const canvas = document.createElement('canvas');
+    canvas.width = img.width;
+    canvas.height = img.height;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0);
+    canvas.toBlob(async (blob) => {
+      try {
+        await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+      } catch {
+        // Fallback: copy data URL as text
+        copyText(dataUrl);
+      }
+    }, 'image/png');
+  };
+  img.src = dataUrl;
 }
 
 // --- Init ---
