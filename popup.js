@@ -154,19 +154,24 @@ function createIframe(initMsg) {
 
 // --- Clipboard (delegated from iframe) ---
 
-async function handleCopy(format, data) {
-  try {
-    if (format === 'png' && data) {
-      // data is a data URL: "data:image/png;base64,..."
-      const res = await fetch(data);
-      const blob = await res.blob();
-      await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
-    } else if (data) {
-      await navigator.clipboard.writeText(data);
-    }
-  } catch (e) {
-    console.error('Clipboard write failed:', e);
+function handleCopy(format, data) {
+  if (!data) return;
+  if (format === 'png') {
+    // PNG clipboard requires user gesture — copy as data URL text instead
+    copyToClipboard(data);
+    return;
   }
+  copyToClipboard(data);
+}
+
+function copyToClipboard(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.cssText = 'position:fixed;left:-9999px;';
+  document.body.appendChild(ta);
+  ta.select();
+  document.execCommand('copy');
+  document.body.removeChild(ta);
 }
 
 // --- Init ---
