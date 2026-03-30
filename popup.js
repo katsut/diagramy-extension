@@ -144,7 +144,29 @@ function createIframe(initMsg) {
       accessToken = null;
       showLoginPrompt();
     }
+
+    // Handle clipboard operations delegated from iframe
+    if (msg.type === 'copy') {
+      handleCopy(msg.format, msg.data);
+    }
   });
+}
+
+// --- Clipboard (delegated from iframe) ---
+
+async function handleCopy(format, data) {
+  try {
+    if (format === 'png' && data) {
+      // data is a data URL: "data:image/png;base64,..."
+      const res = await fetch(data);
+      const blob = await res.blob();
+      await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+    } else if (data) {
+      await navigator.clipboard.writeText(data);
+    }
+  } catch (e) {
+    console.error('Clipboard write failed:', e);
+  }
 }
 
 // --- Init ---
