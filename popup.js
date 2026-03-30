@@ -100,6 +100,8 @@ let customColors = null;
 
 // --- Auth ---
 
+let authMode = 'disabled';
+
 async function getStoredToken() {
   const { auth } = await chrome.storage.local.get('auth');
   if (auth && auth.access_token) {
@@ -109,7 +111,28 @@ async function getStoredToken() {
   return false;
 }
 
+async function fetchAuthConfig() {
+  try {
+    const res = await fetch(`${API}/api/auth/config`);
+    if (res.ok) {
+      const cfg = await res.json();
+      authMode = cfg.mode || 'disabled';
+    }
+  } catch (e) {
+    console.warn('Failed to fetch auth config:', e);
+  }
+}
+
 async function login() {
+  if (authMode === 'mock') {
+    await mockLogin();
+    return;
+  }
+  if (authMode === 'disabled') {
+    await mockLogin();
+    return;
+  }
+  // Supabase OAuth
   const redirectUrl = chrome.identity.getRedirectURL();
   const authUrl = `${API}/ext-auth.html?redirect_url=${encodeURIComponent(redirectUrl)}`;
   try {
@@ -127,6 +150,24 @@ async function login() {
   }
 }
 
+async function mockLogin() {
+  try {
+    const res = await fetch(`${API}/api/auth/mock/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: 'Dev User', email: 'dev@figney.local' }),
+    });
+    const data = await res.json();
+    if (data.access_token) {
+      accessToken = data.access_token;
+      await chrome.storage.local.set({ auth: { access_token: data.access_token } });
+      init();
+    }
+  } catch (e) {
+    console.error('Mock login failed:', e);
+  }
+}
+
 async function logout() {
   accessToken = null;
   userPlan = null;
@@ -136,10 +177,11 @@ async function logout() {
 
 function showLoginPrompt() {
   const content = document.getElementById('content');
+  const label = authMode === 'mock' || authMode === 'disabled' ? 'Dev Login' : 'ログイン';
   content.innerHTML = `
     <div class="login-prompt">
       <p>ログインしてFigneyを利用</p>
-      <button class="btn-login" onclick="login()">ログイン</button>
+      <button class="btn-login" onclick="login()">${label}</button>
     </div>
   `;
   document.getElementById('header-right').innerHTML = '';
@@ -310,6 +352,8 @@ function buildSuggestCard(s, idx) {
 // --- Main init ---
 
 async function init() {
+  await fetchAuthConfig();
+
   const hasToken = await getStoredToken();
   if (!hasToken) {
     showLoginPrompt();
