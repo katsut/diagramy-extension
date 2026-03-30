@@ -133,9 +133,9 @@ function createIframe(initMsg) {
       showUserHeader();
     }
 
-    // Cache results from iframe for session persistence
+    // Cache results in session storage (cleared on browser close)
     if (msg.type === 'cache') {
-      chrome.storage.local.set({ cachedResults: msg.data });
+      chrome.storage.session.set({ cachedResults: msg.data });
     }
 
     if (msg.type === 'auth-error') {
@@ -172,7 +172,7 @@ async function init() {
   }
 
   // No new request — try to restore cached results
-  const { cachedResults } = await chrome.storage.local.get('cachedResults');
+  const { cachedResults } = await chrome.storage.session.get('cachedResults');
   if (cachedResults) {
     createIframe({
       type: 'restore',
