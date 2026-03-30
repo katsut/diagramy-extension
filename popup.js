@@ -103,7 +103,7 @@ function showUserHeader() {
 
 // --- iframe communication ---
 
-function createIframe(selectedText, context) {
+function createIframe(initMsg) {
   const content = document.getElementById('content');
   content.innerHTML = '';
 
@@ -118,11 +118,9 @@ function createIframe(selectedText, context) {
 
     if (msg.type === 'ready') {
       iframe.contentWindow.postMessage({
-        type: 'init',
+        ...initMsg,
         token: accessToken,
         authMode: authMode,
-        selectedText: selectedText,
-        context: context,
       }, '*');
     }
 
@@ -133,6 +131,17 @@ function createIframe(selectedText, context) {
     if (msg.type === 'plan') {
       userPlan = msg.plan;
       showUserHeader();
+    }
+
+    // Cache results from iframe for session persistence
+    if (msg.type === 'cache') {
+      chrome.storage.local.set({ cachedResults: msg.data });
+    }
+
+    if (msg.type === 'auth-error') {
+      chrome.storage.local.remove('auth');
+      accessToken = null;
+      showLoginPrompt();
     }
   });
 }
@@ -150,12 +159,29 @@ async function init() {
 
   showUserHeader();
 
+  // Check for new pending request
   const { pendingRequest } = await chrome.storage.local.get('pendingRequest');
-  if (!pendingRequest || pendingRequest.status !== 'pending') return;
+  if (pendingRequest && pendingRequest.status === 'pending') {
+    await chrome.storage.local.set({ pendingRequest: { ...pendingRequest, status: 'processing' } });
+    createIframe({
+      type: 'init',
+      selectedText: pendingRequest.selected_text,
+      context: pendingRequest.context || '',
+    });
+    return;
+  }
 
-  await chrome.storage.local.set({ pendingRequest: { ...pendingRequest, status: 'processing' } });
+  // No new request — try to restore cached results
+  const { cachedResults } = await chrome.storage.local.get('cachedResults');
+  if (cachedResults) {
+    createIframe({
+      type: 'restore',
+      data: cachedResults,
+    });
+    return;
+  }
 
-  createIframe(pendingRequest.selected_text, pendingRequest.context || '');
+  // Nothing to show
 }
 
 init();
