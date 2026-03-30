@@ -32,7 +32,6 @@ async function login() {
     await mockLogin();
     return;
   }
-  // Supabase OAuth
   const redirectUrl = chrome.identity.getRedirectURL();
   const authUrl = `${API}/ext-auth.html?redirect_url=${encodeURIComponent(redirectUrl)}`;
   try {
@@ -81,9 +80,10 @@ function showLoginPrompt() {
   content.innerHTML = `
     <div class="login-prompt">
       <p>ログインしてFigneyを利用</p>
-      <button class="btn-login" onclick="login()">${label}</button>
+      <button class="btn-login" id="btn-login">${label}</button>
     </div>
   `;
+  document.getElementById('btn-login').addEventListener('click', login);
   document.getElementById('header-right').innerHTML = '';
 }
 
@@ -96,8 +96,9 @@ function showUserHeader() {
   right.innerHTML = `
     ${remaining !== '' ? `<span class="usage-badge" title="${userPlan.monthly_used}/${userPlan.monthly_limit} used">${remaining}</span>` : ''}
     ${planLabel ? `<span class="plan-badge">${planLabel}</span>` : ''}
-    <button class="btn-icon" onclick="logout()" title="Logout">✕</button>
+    <button class="btn-icon" id="btn-logout" title="Logout">✕</button>
   `;
+  document.getElementById('btn-logout').addEventListener('click', logout);
 }
 
 // --- iframe communication ---
@@ -111,13 +112,11 @@ function createIframe(selectedText, context) {
   iframe.src = `${API}/app/extension.html`;
   content.appendChild(iframe);
 
-  // Listen for messages from iframe
   window.addEventListener('message', (event) => {
     const msg = event.data;
     if (!msg || !msg.type) return;
 
     if (msg.type === 'ready') {
-      // iframe is loaded, send init data
       iframe.contentWindow.postMessage({
         type: 'init',
         token: accessToken,
