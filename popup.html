@@ -6,12 +6,10 @@
   :root {
     --bg: #0F1117; --surface: #1A1D27; --border: #2A2D3A; --text: #E4E4E7;
     --text-secondary: #9CA3AF; --primary: #60A5FA; --success: #34D399; --error: #F87171;
-    --warning: #FBBF24;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { width: 420px; max-height: 600px; overflow-y: auto; font-family: system-ui, sans-serif; background: var(--bg); color: var(--text); font-size: 12px; }
+  body { width: 420px; font-family: system-ui, sans-serif; background: var(--bg); color: var(--text); }
 
-  /* Header */
   .header { padding: 10px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
   .header-left { display: flex; align-items: center; gap: 8px; }
   .header h1 { font-size: 14px; font-weight: 700; }
@@ -22,131 +20,18 @@
   .btn-icon { background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 13px; padding: 3px; border-radius: 4px; }
   .btn-icon:hover { color: var(--text); background: var(--surface); }
 
-  /* Content */
-  .content { padding: 10px 14px; }
-
-  /* Login */
   .login-prompt { text-align: center; padding: 32px 16px; }
   .login-prompt p { font-size: 13px; color: var(--text-secondary); margin-bottom: 16px; }
   .btn-login { padding: 10px 24px; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; background: var(--primary); color: white; }
   .btn-login:hover { opacity: 0.9; }
 
-  /* Selected text preview */
-  .selected-text {
-    font-size: 11px; color: var(--text-secondary); background: var(--surface);
-    padding: 8px; border-radius: 6px; margin-bottom: 10px;
-    max-height: 50px; overflow: hidden; line-height: 1.4;
-  }
-
-  /* Concept blocks */
-  .concept-blocks { display: flex; gap: 6px; margin-bottom: 10px; overflow-x: auto; }
-  .concept-block {
-    flex: 1; min-width: 0; padding: 6px 8px; border: 1px solid var(--border); border-radius: 6px;
-    cursor: pointer; background: var(--surface); transition: all 0.15s;
-  }
-  .concept-block:hover { border-color: var(--primary); }
-  .concept-block.active { border-color: var(--primary); box-shadow: 0 0 0 1px var(--primary); }
-  .cb-rank { display: inline-block; width: 18px; height: 18px; border-radius: 50%; text-align: center; line-height: 18px; font-size: 10px; font-weight: 700; margin-right: 4px; }
-  .cb-rank.r1 { background: #F59E0B; color: #000; }
-  .cb-rank.r2 { background: #94A3B8; color: #000; }
-  .cb-rank.r3 { background: #B45309; color: #fff; }
-  .cb-body { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
-  .cb-cat { font-size: 10px; font-weight: 600; color: var(--primary); }
-  .cb-format { font-size: 10px; color: var(--text); }
-  .cb-conf { font-size: 9px; color: var(--success); margin-left: auto; }
-
-  /* Suggest card */
-  .suggest-card {
-    border: 1px solid var(--border); border-radius: 8px; background: var(--surface); overflow: hidden;
-  }
-  .sr-header { display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; border-bottom: 1px solid var(--border); }
-  .sr-title { font-size: 12px; font-weight: 600; }
-  .sr-conf { font-size: 10px; color: var(--success); }
-
-  /* Controls row */
-  .sr-controls { display: flex; gap: 6px; padding: 6px 10px; flex-wrap: wrap; align-items: center; border-bottom: 1px solid var(--border); }
-  .sr-control-group { display: flex; align-items: center; gap: 4px; }
-  .sr-control-group label { font-size: 9px; color: var(--text-secondary); white-space: nowrap; }
-  .sr-control-group select {
-    font-size: 10px; padding: 2px 4px; border: 1px solid var(--border); border-radius: 4px;
-    background: var(--bg); color: var(--text); max-width: 110px;
-  }
-
-  /* Result body */
-  .sr-body {
-    min-height: 80px; display: flex; align-items: center; justify-content: center;
-    overflow: hidden; padding: 4px;
-  }
-  .sr-body svg { max-width: 100%; height: auto; }
-  .sr-body.has-content { display: block; }
-
-  /* Toolbar */
-  .sr-toolbar {
-    display: flex; align-items: center; gap: 4px; padding: 6px 10px; border-top: 1px solid var(--border); flex-wrap: wrap;
-  }
-  .sr-toolbar button {
-    font-size: 10px; padding: 4px 8px; border: 1px solid var(--border); border-radius: 4px;
-    background: var(--surface); color: var(--text); cursor: pointer; display: inline-flex; align-items: center; gap: 3px;
-  }
-  .sr-toolbar button:hover { border-color: var(--primary); }
-  .sr-toolbar button.active { background: var(--primary); color: #fff; border-color: var(--primary); }
-  .sr-primary-action { background: var(--primary) !important; color: #fff !important; border-color: var(--primary) !important; }
-
-  /* Dropdown menu */
-  .action-menu {
-    position: absolute; bottom: 100%; left: 0; margin-bottom: 4px;
-    background: var(--surface); border: 1px solid var(--border); border-radius: 6px;
-    padding: 4px; z-index: 10; white-space: nowrap;
-  }
-  .action-menu button { display: block; width: 100%; text-align: left; border: none !important; }
-  .action-menu button:hover { background: var(--border) !important; }
-
-  /* Edit panel */
-  .sr-edit-panel { padding: 10px; border-top: 1px solid var(--border); }
-  .edit-title-row { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
-  .edit-title-row label { font-size: 10px; font-weight: 600; white-space: nowrap; }
-  .edit-title-row input { flex: 1; font-size: 11px; padding: 4px 6px; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--text); }
-  .edit-items { display: flex; flex-direction: column; gap: 4px; margin-bottom: 6px; max-height: 200px; overflow-y: auto; }
-  .edit-item { display: flex; gap: 4px; align-items: center; }
-  .edit-item input {
-    flex: 1; font-size: 10px; padding: 3px 6px; border: 1px solid var(--border); border-radius: 4px;
-    background: var(--bg); color: var(--text); min-width: 0;
-  }
-  .edit-item button { background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 12px; padding: 2px; }
-  .edit-item button:hover { color: var(--error); }
-  .edit-add-btn {
-    font-size: 10px; padding: 3px 8px; border: 1px solid var(--border); border-radius: 4px;
-    background: var(--surface); color: var(--text-secondary); cursor: pointer;
-  }
-  .edit-add-btn:hover { border-color: var(--primary); }
-  .edit-apply-row { margin-top: 6px; text-align: right; }
-  .edit-apply-btn {
-    font-size: 10px; padding: 4px 12px; border: none; border-radius: 4px;
-    background: var(--primary); color: #fff; cursor: pointer; font-weight: 600;
-  }
-  .edit-apply-btn:hover { opacity: 0.9; }
-  .char-count { font-size: 9px; color: var(--text-secondary); }
-  .char-count.over { color: var(--error); }
-  .word-count { font-size: 9px; color: var(--text-secondary); margin-left: 2px; }
-  .word-count.over { color: var(--warning); }
-
-  /* Color panel */
-  .color-panel { padding: 10px; border-top: 1px solid var(--border); }
-  .color-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-  .color-row { display: flex; align-items: center; gap: 6px; }
-  .color-row label { font-size: 9px; color: var(--text-secondary); min-width: 50px; }
-  .color-row input[type="color"] { width: 28px; height: 22px; border: 1px solid var(--border); border-radius: 3px; background: none; cursor: pointer; padding: 0; }
-  .color-actions { display: flex; gap: 6px; margin-top: 8px; }
-
-  /* Status / spinner */
-  .status { text-align: center; padding: 16px; color: var(--text-secondary); font-size: 12px; }
-  .spinner { width: 18px; height: 18px; border: 2px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto 6px; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
   .empty { padding: 24px 16px; text-align: center; color: var(--text-secondary); font-size: 13px; }
+  .status { text-align: center; padding: 16px; color: var(--text-secondary); font-size: 12px; }
 
-  /* None result */
-  .none-result { text-align: center; padding: 20px; color: var(--text-secondary); font-size: 12px; }
+  #app-frame {
+    width: 100%; border: none; display: block;
+    min-height: 100px; max-height: 550px;
+  }
 </style>
 </head>
 <body>
@@ -158,7 +43,7 @@
   <div class="header-right" id="header-right"></div>
 </div>
 
-<div class="content" id="content">
+<div id="content">
   <div class="empty" id="empty-state">テキストを選択して右クリック →<br>「Figney: 図式化」</div>
 </div>
 
