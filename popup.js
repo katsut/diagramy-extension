@@ -160,9 +160,9 @@ async function init() {
   showUserHeader();
 
   // Check for new pending request
-  const { pendingRequest } = await chrome.storage.local.get('pendingRequest');
+  const { pendingRequest } = await chrome.storage.session.get('pendingRequest');
   if (pendingRequest && pendingRequest.status === 'pending') {
-    await chrome.storage.local.set({ pendingRequest: { ...pendingRequest, status: 'processing' } });
+    await chrome.storage.session.set({ pendingRequest: { ...pendingRequest, status: 'processing' } });
     createIframe({
       type: 'init',
       selectedText: pendingRequest.selected_text,

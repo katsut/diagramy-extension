@@ -17,7 +17,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   if (!selectedText) return;
 
   // Store data for popup
-  await chrome.storage.local.set({
+  await chrome.storage.session.set({
     pendingRequest: {
       context: tab.title || '',
       selected_text: selectedText,
